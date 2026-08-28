@@ -1,0 +1,484 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+| ---------------------------------------------------------------------------
+| Guang Dong Crown design system
+| ---------------------------------------------------------------------------
+| Two palettes live side by side:
+|
+|  - The admin dashboard uses the neutral shadcn tokens and follows the
+|    operator's light/dark preference.
+|  - The public website uses the palette sampled from the company logo
+|    teal) scoped to `.site-root`, so marketing pages always render in
+|    the brand identity regardless of the visitor's OS theme.
+*/
+
+@theme {
+    --font-sans:
+        'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Archivo', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:
+        ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    /* Brand palette — used by the public website. */
+    --color-graphite-950: oklch(0.21 0.028 218);
+    --color-graphite-900: oklch(0.26 0.026 218);
+    --color-graphite-800: oklch(0.32 0.022 218);
+    --color-graphite-700: oklch(0.40 0.018 218);
+    --color-graphite-600: oklch(0.49 0.012 218);
+    --color-graphite-500: oklch(0.60 0.010 218);
+    --color-graphite-400: oklch(0.71 0.008 218);
+    --color-graphite-300: oklch(0.83 0.006 218);
+    --color-graphite-200: oklch(0.90 0.005 218);
+    --color-graphite-100: oklch(0.95 0.004 218);
+    --color-graphite-50: oklch(0.976 0.003 218);
+
+    /* Brand teal, sampled from the logo (#0AA6B8 mark, #12303A counter-shape). */
+    --color-brand-800: oklch(0.38 0.070 207);
+    --color-brand-700: oklch(0.47 0.088 207);
+    --color-brand-600: oklch(0.57 0.104 207);
+    --color-brand-500: oklch(0.655 0.115 207);
+    --color-brand-400: oklch(0.745 0.100 203);
+    --color-brand-300: oklch(0.835 0.072 200);
+    --color-brand-100: oklch(0.945 0.031 200);
+
+    /* Motion */
+    --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-brand-in: cubic-bezier(0.55, 0, 0.35, 1);
+}
+
+:root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.87 0 0);
+    --chart-1: oklch(0.655 0.115 207);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --radius: 0.5rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.87 0 0);
+
+    /* Brand accent, overridable from the dashboard settings screen. */
+    --brand-accent: oklch(0.655 0.115 207);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.18 0.004 250);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.18 0.004 250);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.704 0.191 22.216);
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+    --chart-1: oklch(0.745 0.100 203);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.985 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    /* A visible, brand-consistent focus ring everywhere. */
+    :focus-visible {
+        outline: 2px solid var(--brand-accent);
+        outline-offset: 2px;
+    }
+}
+
+@layer components {
+    /*
+    | Public site shell. Sets the fixed brand palette and typography so the
+    | marketing pages never inherit the dashboard's light/dark tokens.
+    */
+    .site-root {
+        --site-bg: var(--color-graphite-50);
+        --site-surface: #ffffff;
+        --site-fg: var(--color-graphite-900);
+        --site-muted: var(--color-graphite-600);
+        --site-line: var(--color-graphite-200);
+        --site-accent: var(--brand-accent);
+
+        background-color: var(--site-bg);
+        color: var(--site-fg);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Inverted band: dark sections inside the light page. */
+    .site-invert {
+        --site-bg: var(--color-graphite-950);
+        --site-surface: var(--color-graphite-900);
+        --site-fg: var(--color-graphite-50);
+        --site-muted: var(--color-graphite-400);
+        --site-line: color-mix(
+            in oklab,
+            var(--color-graphite-50) 14%,
+            transparent
+        );
+
+        background-color: var(--site-bg);
+        color: var(--site-fg);
+    }
+
+    .site-display {
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+        line-height: 1.04;
+        text-wrap: balance;
+    }
+
+    .site-eyebrow {
+        font-family: var(--font-display);
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--site-accent);
+    }
+
+    /* Editorial body copy rendered from the CMS rich-text editor. */
+    .site-prose {
+        color: var(--site-muted);
+        font-size: 1.0625rem;
+        line-height: 1.75;
+    }
+
+    .site-prose > * + * {
+        margin-top: 1.25em;
+    }
+
+    .site-prose h2,
+    .site-prose h3,
+    .site-prose h4 {
+        color: var(--site-fg);
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin-top: 2em;
+    }
+
+    .site-prose h2 {
+        font-size: 1.75rem;
+    }
+
+    .site-prose h3 {
+        font-size: 1.375rem;
+    }
+
+    .site-prose h4 {
+        font-size: 1.125rem;
+    }
+
+    .site-prose a {
+        color: var(--site-fg);
+        text-decoration: underline;
+        text-decoration-color: var(--site-accent);
+        text-underline-offset: 4px;
+    }
+
+    .site-prose strong {
+        color: var(--site-fg);
+        font-weight: 600;
+    }
+
+    .site-prose ul,
+    .site-prose ol {
+        padding-left: 1.25rem;
+    }
+
+    .site-prose ul {
+        list-style: disc;
+    }
+
+    .site-prose ol {
+        list-style: decimal;
+    }
+
+    .site-prose li + li {
+        margin-top: 0.5em;
+    }
+
+    .site-prose blockquote {
+        border-left: 2px solid var(--site-accent);
+        padding-left: 1.25rem;
+        font-size: 1.25rem;
+        line-height: 1.5;
+        color: var(--site-fg);
+    }
+
+    .site-prose img {
+        border-radius: 2px;
+        width: 100%;
+        height: auto;
+    }
+
+    .site-prose figure figcaption {
+        margin-top: 0.75rem;
+        font-size: 0.8125rem;
+        color: var(--site-muted);
+    }
+
+    /* Hairline rule used to structure the editorial grid. */
+    .site-rule {
+        border-color: var(--site-line);
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .text-pretty {
+        text-wrap: pretty;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@layer components {
+    /*
+    | Rich-text editor surface (dashboard only). Mirrors the public
+    | `.site-prose` rhythm so editors see roughly what visitors will.
+    */
+    .prose-editor {
+        font-size: 0.9375rem;
+        line-height: 1.7;
+    }
+
+    .prose-editor > * + * {
+        margin-top: 1em;
+    }
+
+    .prose-editor h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.25;
+        margin-top: 1.6em;
+    }
+
+    .prose-editor h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.3;
+        margin-top: 1.5em;
+    }
+
+    .prose-editor h4 {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        margin-top: 1.4em;
+    }
+
+    .prose-editor ul {
+        list-style: disc;
+        padding-left: 1.25rem;
+    }
+
+    .prose-editor ol {
+        list-style: decimal;
+        padding-left: 1.25rem;
+    }
+
+    .prose-editor blockquote {
+        border-left: 3px solid var(--border);
+        padding-left: 1rem;
+        font-style: italic;
+    }
+
+    .prose-editor a {
+        color: var(--chart-1);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .prose-editor img {
+        border-radius: 0.375rem;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .prose-editor hr {
+        border-color: var(--border);
+    }
+
+    .prose-editor p.is-editor-empty:first-child::before {
+        color: var(--muted-foreground);
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
+}
+
+/*
+| ---------------------------------------------------------------------------
+| Right-to-left support
+| ---------------------------------------------------------------------------
+| Layout flips automatically because the components are written with logical
+| properties (ps/pe, ms/me, start/end, text-start/text-end). Only the pieces
+| that cannot be expressed logically are handled here: the Arabic typeface,
+| and the handful of glyphs and transforms that must mirror.
+*/
+
+@layer base {
+    [dir='rtl'] {
+        --font-sans:
+            'IBM Plex Sans Arabic', 'Inter', ui-sans-serif, system-ui, sans-serif;
+        --font-display:
+            'IBM Plex Sans Arabic', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+    }
+
+    /* Arabic has no uppercase, and the tight tracking used for Latin eyebrows
+       and buttons makes Arabic harder to read rather than more deliberate. */
+    [dir='rtl'] .site-eyebrow,
+    [dir='rtl'] .site-display {
+        letter-spacing: 0;
+    }
+
+    [dir='rtl'] .site-eyebrow {
+        text-transform: none;
+        font-size: 0.75rem;
+    }
+
+    /* Arabic ascenders and descenders need a little more room than Latin. */
+    [dir='rtl'] .site-display {
+        line-height: 1.25;
+    }
+
+    [dir='rtl'] .site-prose {
+        line-height: 1.9;
+    }
+}
+
+@layer utilities {
+    /* Directional glyphs — arrows and chevrons — must point the other way.
+       Marked explicitly so decorative icons are never flipped by accident. */
+    [dir='rtl'] .rtl-flip {
+        transform: scaleX(-1);
+    }
+
+    /* Numeric and code fragments stay left-to-right inside Arabic copy. */
+    .force-ltr {
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
+}
