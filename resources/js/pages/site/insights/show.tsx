@@ -1,7 +1,7 @@
-import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { ImageReveal, Reveal } from '@/animation';
 import { PostCard } from '@/components/site/cards';
+import { Link } from '@/components/site/link';
 import { Prose } from '@/components/site/listing';
 import { Breadcrumbs } from '@/components/site/page-header';
 import { Container, Eyebrow, Section } from '@/components/site/primitives';
@@ -149,7 +149,7 @@ function ReadingProgress() {
     return (
         <div
             aria-hidden="true"
-            className="fixed inset-x-0 top-18 z-40 h-0.5 origin-left bg-[var(--site-accent)] lg:top-20"
+            className="fixed inset-x-0 top-20 z-40 h-0.5 origin-left bg-[var(--site-accent)] lg:top-24"
             style={{ transform: `scaleX(${progress})` }}
         />
     );

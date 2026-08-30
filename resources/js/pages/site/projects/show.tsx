@@ -1,6 +1,6 @@
-import { Link } from '@inertiajs/react';
 import { Counter, ImageReveal, Reveal, Stagger } from '@/animation';
 import { ProjectCard } from '@/components/site/cards';
+import { Link } from '@/components/site/link';
 import { Prose } from '@/components/site/listing';
 import { PageHeader } from '@/components/site/page-header';
 import { Container, Eyebrow, Section } from '@/components/site/primitives';

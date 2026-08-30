@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-
 /**
  * Single point of truth for "which languages exist, and which way do they run".
  *
@@ -23,11 +21,11 @@ final class Locales
     private const RTL_SCRIPTS = ['Arab', 'Hebr', 'Thaa', 'Nkoo', 'Syrc', 'Samr', 'Mand'];
 
     /**
-     * @return array<string, array{name: string, script: string, native: string, regional: string}>
+     * @return array<string, array{name: string, script: string, native: string, regional: string, flag?: string}>
      */
     public static function supported(): array
     {
-        /** @var array<string, array{name: string, script: string, native: string, regional: string}> */
+        /** @var array<string, array{name: string, script: string, native: string, regional: string, flag?: string}> */
         return config('laravellocalization.supportedLocales', []);
     }
 
@@ -39,9 +37,16 @@ final class Locales
         return array_keys(self::supported());
     }
 
+    /**
+     * The language served from clean URLs.
+     *
+     * Deliberately not config('app.locale'): Laravel's setLocale() writes the
+     * active language back into that key, so on an Arabic request app.locale
+     * is 'ar' and every "is this the default?" check would answer yes.
+     */
     public static function default(): string
     {
-        return (string) config('app.locale', 'en');
+        return (string) config('laravellocalization.defaultLocale', 'en');
     }
 
     public static function current(): string
@@ -69,10 +74,54 @@ final class Locales
     }
 
     /**
+     * URL for a named site route in a given locale.
+     *
+     * Route names are shared across locales and the default locale is
+     * registered last, so `route()` alone always returns the un-prefixed URL.
+     * This adds the prefix back for whichever language is being rendered.
+     *
+     * @param  array<array-key, mixed>  $parameters  positional or keyed, exactly as route() accepts
+     */
+    public static function url(string $name, array $parameters = [], ?string $locale = null): string
+    {
+        $url = route($name, $parameters);
+        $locale ??= self::current();
+
+        if ($locale === self::default()) {
+            return $url;
+        }
+
+        $path = ltrim((string) parse_url($url, PHP_URL_PATH), '/');
+        $query = parse_url($url, PHP_URL_QUERY);
+
+        return url($locale.($path === '' ? '' : '/'.$path)).($query ? '?'.$query : '');
+    }
+
+    /**
+     * The region code whose flag represents this language in the switcher.
+     *
+     * Cosmetic only. Falls back to the region half of `regional`, and then to
+     * the language code itself, so a language added to the config without a
+     * `flag` still renders something sensible instead of an empty slot.
+     */
+    public static function flag(?string $locale = null): string
+    {
+        $locale ??= self::current();
+        $meta = self::supported()[$locale] ?? [];
+
+        $region = $meta['flag']
+            ?? (str_contains($meta['regional'] ?? '', '_')
+                ? explode('_', $meta['regional'])[1]
+                : $locale);
+
+        return strtoupper(substr($region, 0, 2));
+    }
+
+    /**
      * Locale metadata for the language switcher, including the equivalent URL
      * for the page currently being rendered.
      *
-     * @return list<array{code: string, name: string, native: string, direction: string, url: string, current: bool}>
+     * @return list<array{code: string, name: string, native: string, direction: string, flag: string, url: string, current: bool}>
      */
     public static function forSwitcher(): array
     {
@@ -85,12 +134,38 @@ final class Locales
                 'name' => $meta['name'],
                 'native' => $meta['native'],
                 'direction' => self::direction($code),
-                'url' => LaravelLocalization::getLocalizedURL($code, null, [], true) ?: '/',
+                'flag' => self::flag($code),
+                'url' => self::currentUrlIn($code),
                 'current' => $code === $current,
             ];
         }
 
         return $switcher;
+    }
+
+    /**
+     * The URL of the page being rendered, in another language.
+     *
+     * Derived from the request path rather than the matched route, so it works
+     * for every page including the CMS catch-all.
+     */
+    public static function currentUrlIn(string $locale): string
+    {
+        $request = request();
+        $segments = $request->segments();
+
+        // Drop the prefix of whichever locale is currently being served.
+        if (isset($segments[0]) && self::isSupported($segments[0])) {
+            array_shift($segments);
+        }
+
+        if ($locale !== self::default()) {
+            array_unshift($segments, $locale);
+        }
+
+        $query = $request->getQueryString();
+
+        return url(implode('/', $segments)).($query ? '?'.$query : '');
     }
 
     /**
@@ -103,11 +178,7 @@ final class Locales
         $alternates = [];
 
         foreach (self::supported() as $code => $meta) {
-            $url = LaravelLocalization::getLocalizedURL($code, null, [], true);
-
-            if (! $url) {
-                continue;
-            }
+            $url = self::currentUrlIn($code);
 
             $alternates[] = ['hreflang' => str_replace('_', '-', $meta['regional'] ?: $code), 'href' => $url];
 

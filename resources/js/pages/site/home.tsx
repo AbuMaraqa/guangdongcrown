@@ -1,4 +1,3 @@
-import { Link } from '@inertiajs/react';
 import { ArrowDown } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import {
@@ -20,6 +19,7 @@ import {
     SolutionCard,
     TestimonialCard,
 } from '@/components/site/cards';
+import { Link } from '@/components/site/link';
 import {
     Container,
     Eyebrow,

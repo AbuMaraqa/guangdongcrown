@@ -1,7 +1,7 @@
-import { Link } from '@inertiajs/react';
 import { ArrowUpRight, Quote as QuoteIcon, Star } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { DynamicIcon } from '@/components/site/dynamic-icon';
+import { Link } from '@/components/site/link';
 import { cn } from '@/lib/utils';
 import type {
     IndustryCard as IndustryCardType,
@@ -111,7 +111,7 @@ export function ProductCard({ product }: { product: ProductCardType }) {
                     )}
                     <ArrowUpRight
                         aria-hidden="true"
-                        className="ms-auto size-4 text-[var(--site-muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--site-accent)] rtl-flip"
+                        className="rtl-flip ms-auto size-4 text-[var(--site-muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--site-accent)]"
                     />
                 </div>
             </div>
@@ -224,7 +224,7 @@ export function ServiceCard({
                 Explore
                 <ArrowUpRight
                     aria-hidden="true"
-                    className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl-flip"
+                    className="rtl-flip size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
             </span>
         </Link>

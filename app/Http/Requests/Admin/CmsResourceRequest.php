@@ -50,6 +50,56 @@ class CmsResourceRequest extends FormRequest
     }
 
     /**
+     * Drop the blank rows repeater and list inputs carry.
+     *
+     * Both widgets keep an empty row at the end of the list so there is
+     * always somewhere to type. Submitting the form as-is would otherwise
+     * fail validation on a row the operator never intended to fill in, so the
+     * empties are pruned here rather than being reported as errors.
+     */
+    protected function prepareForValidation(): void
+    {
+        $pruned = [];
+
+        foreach ($this->cmsResource()->fields() as $field) {
+            if (! is_array($value = $this->input($field->name))) {
+                continue;
+            }
+
+            $pruned[$field->name] = match ($field->type) {
+                'repeater' => array_values(array_filter($value, self::rowHasContent(...))),
+                'list', 'tags' => array_values(array_filter(
+                    array_map(fn ($item) => is_string($item) ? trim($item) : $item, $value),
+                    fn ($item): bool => $item !== null && $item !== '',
+                )),
+                default => $value,
+            };
+        }
+
+        if ($pruned !== []) {
+            $this->merge($pruned);
+        }
+    }
+
+    /**
+     * Whether a repeater row holds anything at all.
+     */
+    private static function rowHasContent(mixed $row): bool
+    {
+        if (! is_array($row)) {
+            return $row !== null && $row !== '';
+        }
+
+        foreach ($row as $value) {
+            if (is_array($value) ? $value !== [] : (is_string($value) ? trim($value) !== '' : $value !== null)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function rules(): array

@@ -53,4 +53,12 @@ class ProductCategory extends Model implements HasMediaGallery, Seoable
     {
         return $this->hasMany(Product::class);
     }
+
+    /**
+     * @return HasMany<Catalogue, $this>
+     */
+    public function catalogues(): HasMany
+    {
+        return $this->hasMany(Catalogue::class);
+    }
 }

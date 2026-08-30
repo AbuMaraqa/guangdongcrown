@@ -6,6 +6,8 @@ export type LocaleOption = {
     name: string;
     native: string;
     direction: 'ltr' | 'rtl';
+    /** ISO 3166-1 alpha-2 region code for the switcher icon. */
+    flag: string;
     url: string;
     current: boolean;
 };
@@ -27,7 +29,8 @@ export type LocaleState = {
  */
 export function useTranslations() {
     const page = usePage();
-    const shared = page.props.translations as Record<string, string> | undefined;
+    const shared = page.props.translations as
+        Record<string, string> | undefined;
     const locale = (page.props.locale ?? {
         current: 'en',
         default: 'en',
@@ -37,7 +40,10 @@ export function useTranslations() {
     }) as LocaleState;
 
     const t = useCallback(
-        (key: string, replace: Record<string, string | number> = {}): string => {
+        (
+            key: string,
+            replace: Record<string, string | number> = {},
+        ): string => {
             let line = shared?.[key] ?? key;
 
             for (const [token, value] of Object.entries(replace)) {
@@ -52,6 +58,7 @@ export function useTranslations() {
     return {
         t,
         locale: locale.current,
+        defaultLocale: locale.default,
         direction: locale.direction,
         rtl: locale.rtl,
         locales: locale.available,

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CatalogueSeeder::class,
+            SystemsSeeder::class,
             EditorialSeeder::class,
         ]);
     }

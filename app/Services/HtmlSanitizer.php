@@ -43,8 +43,10 @@ class HtmlSanitizer
             'ul', 'ol', 'li',
             'blockquote',
             'a[href|title|rel|target]',
-            'img[src|alt|title|width|height|loading]',
-            'figure', 'figcaption',
+            // No `loading` attribute for the same reason: it is HTML5-only.
+            'img[src|alt|title|width|height]',
+            // No figure/figcaption: HTMLPurifier validates against HTML 4.01,
+            // which has no such elements, and the editor never emits them.
             'table', 'thead', 'tbody', 'tr', 'th', 'td',
             'hr', 'code', 'pre',
         ]));

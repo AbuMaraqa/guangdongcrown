@@ -12,6 +12,7 @@ use App\Models\Inquiry;
 use App\Models\Location;
 use App\Models\Product;
 use App\Models\Service;
+use App\Support\Locales;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -24,7 +25,7 @@ class ContactController extends SiteController
         return $this->page('site/contact', [
             ...$this->formData(),
             'type' => InquiryType::Contact->value,
-            'breadcrumbs' => $this->trail([['name' => 'Contact', 'url' => route('site.contact')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Contact', 'url' => Locales::url('site.contact')]]),
         ], [
             'title' => 'Contact us',
             'description' => 'Talk to our aluminium supply and logistics team.',
@@ -45,7 +46,7 @@ class ContactController extends SiteController
                 'product_id' => Product::query()->active()->where('slug', $preselect['product'] ?? null)->value('id'),
                 'service_id' => Service::query()->active()->where('slug', $preselect['service'] ?? null)->value('id'),
             ],
-            'breadcrumbs' => $this->trail([['name' => 'Request a quotation', 'url' => route('site.quote')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Request a quotation', 'url' => Locales::url('site.quote')]]),
         ], [
             'title' => 'Request a quotation',
             'description' => 'Send us your specification and we will come back with pricing and lead times.',

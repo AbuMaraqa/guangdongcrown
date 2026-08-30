@@ -13,6 +13,7 @@ use App\Models\Location;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Solution;
+use App\Support\Locales;
 use Inertia\Response;
 
 /**
@@ -26,7 +27,7 @@ class CapabilityController extends SiteController
             'services' => ServiceResource::collection(
                 Service::query()->active()->ordered()->with('image')->get()
             )->resolve(),
-            'breadcrumbs' => $this->trail([['name' => 'Capabilities', 'url' => route('site.services.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Capabilities', 'url' => Locales::url('site.services.index')]]),
         ], [
             'title' => 'Capabilities',
             'description' => 'Aluminium supply, freight, warehousing and supply chain management under one accountable partner.',
@@ -54,8 +55,8 @@ class CapabilityController extends SiteController
                 Service::query()->active()->where('id', '!=', $service->id)->ordered()->with('image')->limit(3)->get()
             )->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Capabilities', 'url' => route('site.services.index')],
-                ['name' => $service->name, 'url' => route('site.services.show', $service)],
+                ['name' => 'Capabilities', 'url' => Locales::url('site.services.index')],
+                ['name' => $service->name, 'url' => Locales::url('site.services.show', [$service])],
             ]),
         ], [
             'title' => $service->name,
@@ -70,7 +71,7 @@ class CapabilityController extends SiteController
             'solutions' => SolutionResource::collection(
                 Solution::query()->active()->ordered()->with('image')->get()
             )->resolve(),
-            'breadcrumbs' => $this->trail([['name' => 'Solutions', 'url' => route('site.solutions.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Solutions', 'url' => Locales::url('site.solutions.index')]]),
         ], [
             'title' => 'Solutions',
             'description' => 'End-to-end programmes combining aluminium supply with international logistics.',
@@ -89,8 +90,8 @@ class CapabilityController extends SiteController
                 Solution::query()->active()->where('id', '!=', $solution->id)->ordered()->with('image')->limit(3)->get()
             )->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Solutions', 'url' => route('site.solutions.index')],
-                ['name' => $solution->title, 'url' => route('site.solutions.show', $solution)],
+                ['name' => 'Solutions', 'url' => Locales::url('site.solutions.index')],
+                ['name' => $solution->title, 'url' => Locales::url('site.solutions.show', [$solution])],
             ]),
         ], [
             'title' => $solution->title,
@@ -105,7 +106,7 @@ class CapabilityController extends SiteController
             'industries' => IndustryResource::collection(
                 Industry::query()->active()->ordered()->with('image')->get()
             )->resolve(),
-            'breadcrumbs' => $this->trail([['name' => 'Industries', 'url' => route('site.industries.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Industries', 'url' => Locales::url('site.industries.index')]]),
         ], [
             'title' => 'Industries',
             'description' => 'Sectors served by our aluminium supply and logistics programmes.',
@@ -123,8 +124,8 @@ class CapabilityController extends SiteController
             'solutions' => SolutionResource::collection($industry->solutions->where('is_active', true))->resolve(),
             'projects' => ProjectResource::collection($industry->projects->where('is_active', true)->take(3))->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Industries', 'url' => route('site.industries.index')],
-                ['name' => $industry->name, 'url' => route('site.industries.show', $industry)],
+                ['name' => 'Industries', 'url' => Locales::url('site.industries.index')],
+                ['name' => $industry->name, 'url' => Locales::url('site.industries.show', [$industry])],
             ]),
         ], [
             'title' => $industry->name,
@@ -159,7 +160,7 @@ class CapabilityController extends SiteController
             'projects' => ProjectResource::collection(
                 Project::query()->active()->featured()->with(['image', 'category'])->ordered()->limit(3)->get()
             )->resolve(),
-            'breadcrumbs' => $this->trail([['name' => 'Logistics', 'url' => route('site.logistics')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Logistics', 'url' => Locales::url('site.logistics')]]),
         ], [
             'title' => 'Global logistics',
             'description' => 'Ocean and air freight, bonded warehousing, inland transport and end-to-end supply chain control.',

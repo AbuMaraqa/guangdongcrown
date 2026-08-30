@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     private const CONTENT_MODELS = [
         Models\Page::class,
         Models\Product::class,
+        Models\Catalogue::class,
         Models\ProductCategory::class,
         Models\Service::class,
         Models\Solution::class,

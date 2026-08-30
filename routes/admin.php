@@ -9,11 +9,12 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'staff'])
+Route::middleware(['auth', 'staff', 'dashboard.locale'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
+        Route::put('locale', [DashboardController::class, 'locale'])->name('locale');
 
         /*
         | Media library

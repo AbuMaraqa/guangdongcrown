@@ -1,8 +1,8 @@
-import { Link } from '@inertiajs/react';
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDown, Inbox } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Counter, Reveal, Stagger } from '@/animation';
+import { Link } from '@/components/site/link';
 import {
     Container,
     SectionHeading,

@@ -9,6 +9,7 @@ use App\Services\SeoService;
 use App\Services\StructuredData;
 use App\Settings\CompanySettings;
 use App\Settings\HomeSettings;
+use App\Support\Locales;
 use Illuminate\Database\Eloquent\Model;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -44,6 +45,6 @@ abstract class SiteController extends Controller
      */
     protected function trail(array $trail): array
     {
-        return [['name' => 'Home', 'url' => route('site.home')], ...$trail];
+        return [['name' => 'Home', 'url' => Locales::url('site.home')], ...$trail];
     }
 }

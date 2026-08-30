@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\MediaAsset;
 use App\Models\User;
 
 class MediaPolicy

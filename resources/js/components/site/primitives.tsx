@@ -1,7 +1,7 @@
-import { Link } from '@inertiajs/react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import type { ComponentProps, ElementType, ReactNode } from 'react';
 import { Magnetic, Reveal } from '@/animation';
+import { Link } from '@/components/site/link';
 import { cn } from '@/lib/utils';
 
 /**
@@ -157,7 +157,7 @@ export function SiteLink({
             {withArrow && (
                 <ArrowRight
                     aria-hidden="true"
-                    className="size-4 transition-transform duration-300 group-hover/btn:translate-x-1 rtl-flip"
+                    className="rtl-flip size-4 transition-transform duration-300 group-hover/btn:translate-x-1"
                 />
             )}
         </>
@@ -200,7 +200,7 @@ export function SiteButton({
             {withArrow && (
                 <ArrowRight
                     aria-hidden="true"
-                    className="size-4 transition-transform duration-300 group-hover/btn:translate-x-1 rtl-flip"
+                    className="rtl-flip size-4 transition-transform duration-300 group-hover/btn:translate-x-1"
                 />
             )}
         </button>
@@ -232,11 +232,11 @@ export function TextArrowLink({
         >
             <span className="relative">
                 {children}
-                <span className="absolute -bottom-1 start-0 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:origin-left group-hover/link:scale-x-100" />
+                <span className="absolute start-0 -bottom-1 h-px w-full origin-right scale-x-0 bg-current transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:origin-left group-hover/link:scale-x-100" />
             </span>
             <ArrowUpRight
                 aria-hidden="true"
-                className="size-4 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 rtl-flip"
+                className="rtl-flip size-4 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
             />
         </Link>
     );

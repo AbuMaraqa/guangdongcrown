@@ -180,19 +180,18 @@ class MediaAsset extends Model implements HasMedia
     }
 
     /**
-     * @return Attribute<int, never>
+     * Plain methods rather than Eloquent attributes: nothing casts or persists
+     * these, and `Attribute`'s TGet template is invariant, which makes a
+     * nullable accessor awkward to type for no benefit.
      */
-    protected function width(): Attribute
+    public function width(): ?int
     {
-        return Attribute::get(fn (): ?int => $this->dimension('width'));
+        return $this->dimension('width');
     }
 
-    /**
-     * @return Attribute<int, never>
-     */
-    protected function height(): Attribute
+    public function height(): ?int
     {
-        return Attribute::get(fn (): ?int => $this->dimension('height'));
+        return $this->dimension('height');
     }
 
     /**

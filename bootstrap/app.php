@@ -3,6 +3,8 @@
 use App\Http\Middleware\EnsureUserIsStaff;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetDashboardLocale;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrackPageView;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -33,6 +35,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'staff' => EnsureUserIsStaff::class,
             'track.views' => TrackPageView::class,
+            'setlocale' => SetLocale::class,
+            'dashboard.locale' => SetDashboardLocale::class,
 
             // mcamara/laravel-localization ships the middleware but leaves the
             // aliases to the application under Laravel 11+ bootstrapping.

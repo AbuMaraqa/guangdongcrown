@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Support\Locales;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
@@ -47,7 +48,7 @@ class ProductController extends SiteController
                 'search' => $filters['search'] ?? '',
                 'category' => $filters['category'] ?? '',
             ],
-            'breadcrumbs' => $this->trail([['name' => 'Aluminium products', 'url' => route('site.products.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Aluminium products', 'url' => Locales::url('site.products.index')]]),
         ], [
             'title' => 'Aluminium products',
             'description' => 'Extruded profiles, sheet, coil and billet supplied to international specification.',
@@ -73,8 +74,8 @@ class ProductController extends SiteController
             'product' => ProductResource::detailed($product)->resolve(),
             'related' => ProductResource::collection($related)->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Aluminium products', 'url' => route('site.products.index')],
-                ['name' => $product->name, 'url' => route('site.products.show', $product)],
+                ['name' => 'Aluminium products', 'url' => Locales::url('site.products.index')],
+                ['name' => $product->name, 'url' => Locales::url('site.products.show', [$product])],
             ]),
         ], [
             'title' => $product->name,

@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
+import { useLocalePath } from '@/hooks/use-locale-path';
 import { useSyncedState } from '@/hooks/use-synced-state';
 import { cn } from '@/lib/utils';
 import type { Paginated } from '@/types/site';
@@ -29,6 +30,8 @@ export function FilterBar({
     className?: string;
 }) {
     const [term, setTerm] = useSyncedState(search);
+    const localize = useLocalePath();
+    const path = localize(basePath);
 
     const visit = (params: Record<string, string>) => {
         const query: Record<string, string> = {
@@ -38,7 +41,7 @@ export function FilterBar({
         };
 
         router.get(
-            basePath,
+            path,
             Object.fromEntries(
                 Object.entries(query).filter(([, v]) => v !== ''),
             ),
@@ -89,7 +92,7 @@ export function FilterBar({
             >
                 <Search
                     aria-hidden="true"
-                    className="pointer-events-none absolute top-1/2 start-3.5 size-4 -translate-y-1/2 text-[var(--site-muted)]"
+                    className="pointer-events-none absolute start-3.5 top-1/2 size-4 -translate-y-1/2 text-[var(--site-muted)]"
                 />
                 <input
                     type="search"
@@ -97,7 +100,7 @@ export function FilterBar({
                     onChange={(event) => setTerm(event.target.value)}
                     placeholder={searchPlaceholder}
                     aria-label={searchPlaceholder}
-                    className="h-11 w-full border border-[var(--site-line)] bg-[var(--site-surface)] pe-10 ps-10 text-sm transition-colors outline-none placeholder:text-[var(--site-muted)] focus:border-[var(--site-accent)]"
+                    className="h-11 w-full border border-[var(--site-line)] bg-[var(--site-surface)] ps-10 pe-10 text-sm transition-colors outline-none placeholder:text-[var(--site-muted)] focus:border-[var(--site-accent)]"
                 />
                 {term && (
                     <button
@@ -105,7 +108,7 @@ export function FilterBar({
                         onClick={() => {
                             setTerm('');
                             router.get(
-                                basePath,
+                                path,
                                 activeFacet ? { [facetKey]: activeFacet } : {},
                                 {
                                     preserveScroll: true,
@@ -114,7 +117,7 @@ export function FilterBar({
                                 },
                             );
                         }}
-                        className="absolute top-1/2 end-3 -translate-y-1/2 text-[var(--site-muted)] transition-colors hover:text-[var(--site-fg)]"
+                        className="absolute end-3 top-1/2 -translate-y-1/2 text-[var(--site-muted)] transition-colors hover:text-[var(--site-fg)]"
                     >
                         <span className="sr-only">Clear search</span>
                         <X className="size-4" />

@@ -1,10 +1,11 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { ChevronDown, Menu, Phone, X } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { gsap, prefersReducedMotion } from '@/animation';
 import { DynamicIcon } from '@/components/site/dynamic-icon';
 import { LanguageSwitcher } from '@/components/site/language-switcher';
+import { Link } from '@/components/site/link';
 import { Container, SiteLink } from '@/components/site/primitives';
 import { useTranslations } from '@/hooks/use-translations';
 import { cn } from '@/lib/utils';
@@ -25,7 +26,10 @@ type MenuGroup = {
     feature?: { title: string; body: string; href: string; cta: string };
 };
 
-function buildMenu(chrome: SiteChrome, t: (key: string) => string): MenuGroup[] {
+function buildMenu(
+    chrome: SiteChrome,
+    t: (key: string) => string,
+): MenuGroup[] {
     const { navigation } = chrome;
 
     const toLinks = (entries: NavEntry[], base: string): MenuLink[] =>
@@ -68,9 +72,19 @@ function buildMenu(chrome: SiteChrome, t: (key: string) => string): MenuGroup[] 
             href: '/products',
             links: [
                 {
+                    label: t('Our products'),
+                    href: '/our-products',
+                    description: t('Systems grouped by application.'),
+                },
+                {
+                    label: t('Catalogue'),
+                    href: '/catalogue',
+                    description: t('Profile drawings, page by page.'),
+                },
+                {
                     label: t('All products'),
                     href: '/products',
-                    description: 'The full catalogue.',
+                    description: t('The full catalogue.'),
                 },
                 ...navigation.productCategories.map((category) => ({
                     label: category.name,
@@ -79,7 +93,9 @@ function buildMenu(chrome: SiteChrome, t: (key: string) => string): MenuGroup[] 
             ],
             feature: {
                 title: t('Need a specification checked?'),
-                body: t('Send us a drawing or alloy requirement and we will confirm feasibility, tolerance and lead time.'),
+                body: t(
+                    'Send us a drawing or alloy requirement and we will confirm feasibility, tolerance and lead time.',
+                ),
                 href: '/request-a-quotation',
                 cta: t('Request a quotation'),
             },
@@ -206,7 +222,7 @@ export function SiteHeader({
             onMouseLeave={schedulePanelClose}
         >
             <Container width="wide">
-                <div className="flex h-18 items-center justify-between gap-8 lg:h-20">
+                <div className="flex h-20 items-center justify-between gap-8 lg:h-24">
                     <Link
                         href="/"
                         className="flex shrink-0 items-center gap-3"
@@ -313,7 +329,7 @@ function Wordmark({
             <img
                 src={logo}
                 alt={chrome.company.name}
-                className="h-8 w-auto lg:h-9"
+                className="h-12 w-auto lg:h-16"
             />
         );
     }
@@ -321,7 +337,7 @@ function Wordmark({
     const [first, ...rest] = chrome.company.name.split(' ');
 
     return (
-        <span className="font-display text-lg leading-none font-semibold tracking-tight lg:text-xl">
+        <span className="font-display text-xl leading-none font-semibold tracking-tight lg:text-2xl">
             {first}
             {rest.length > 0 && (
                 <span className="ms-1.5 text-[var(--site-accent)]">
@@ -687,7 +703,7 @@ function MobileGroup({
                     )}
                 />
             </button>
-            <ul id={panelId} hidden={!expanded} className="space-y-1 pb-3 ps-1">
+            <ul id={panelId} hidden={!expanded} className="space-y-1 ps-1 pb-3">
                 {group.links.map((link) => (
                     <li key={link.href}>
                         <Link
@@ -708,5 +724,5 @@ function MobileGroup({
 }
 
 export function HeaderSpacer({ children }: { children?: ReactNode }) {
-    return <div className="h-18 lg:h-20">{children}</div>;
+    return <div className="h-20 lg:h-24">{children}</div>;
 }

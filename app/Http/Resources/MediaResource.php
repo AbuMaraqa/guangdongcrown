@@ -26,8 +26,8 @@ class MediaResource extends JsonResource
             'thumb' => $asset->thumb_url,
             'medium' => $asset->medium_url,
             'alt' => $asset->alt ?: $asset->title ?: '',
-            'width' => $asset->width,
-            'height' => $asset->height,
+            'width' => $asset->width(),
+            'height' => $asset->height(),
         ];
     }
 }

@@ -8,6 +8,7 @@ import { ScrollTrigger } from '@/animation/gsap';
 import { useSmoothScroll } from '@/animation/use-smooth-scroll';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
+import { useDocumentLocale } from '@/hooks/use-document-locale';
 import type { SiteChrome } from '@/types/site';
 
 const EMPTY_CHROME: SiteChrome = {
@@ -47,6 +48,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
     // the header; everywhere else the header sits on the page background.
     const overlay = page.component === 'site/home';
 
+    useDocumentLocale();
     useSmoothScroll();
 
     useEffect(() => {
@@ -78,7 +80,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         >
             <a
                 href="#main"
-                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[60] focus:rounded-sm focus:bg-[var(--site-accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+                className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-[var(--site-accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
             >
                 Skip to content
             </a>
@@ -87,7 +89,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
 
             <main
                 id="main"
-                className={overlay ? 'flex-1' : 'flex-1 pt-18 lg:pt-20'}
+                className={overlay ? 'flex-1' : 'flex-1 pt-20 lg:pt-24'}
             >
                 {children}
             </main>

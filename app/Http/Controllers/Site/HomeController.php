@@ -23,6 +23,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Solution;
 use App\Models\Testimonial;
+use App\Support\Locales;
 use App\Support\Translated;
 use Inertia\Response;
 
@@ -122,7 +123,7 @@ class HomeController extends SiteController
 
         return [
             'label' => $label,
-            'url' => $url ?: route('site.contact'),
+            'url' => $url ?: Locales::url('site.contact'),
         ];
     }
 

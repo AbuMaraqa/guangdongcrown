@@ -56,10 +56,28 @@ class SiteDataService
         ]);
     }
 
+    /**
+     * Just the marks and the name — enough to brand the dashboard and the
+     * sign-in screen without loading the whole public navigation.
+     *
+     * @return array{name: string, logo: string|null, logoInverse: string|null}
+     */
+    public function brand(): array
+    {
+        $locale = Locales::current();
+
+        return Cache::rememberForever(self::CACHE_PREFIX.'brand.'.$locale, fn (): array => [
+            'name' => Translated::get($this->company->name) ?? config('app.name'),
+            'logo' => $this->mediaUrl($this->company->logo_id),
+            'logoInverse' => $this->mediaUrl($this->company->logo_inverse_id),
+        ]);
+    }
+
     public static function flush(): void
     {
         foreach (Locales::codes() as $code) {
             Cache::forget(self::CACHE_PREFIX.$code);
+            Cache::forget(self::CACHE_PREFIX.'brand.'.$code);
         }
     }
 

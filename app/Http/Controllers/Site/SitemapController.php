@@ -14,6 +14,7 @@ use App\Models\Service;
 use App\Models\Solution;
 use App\Models\TeamMember;
 use App\Settings\SeoSettings;
+use App\Support\Locales;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
@@ -39,23 +40,27 @@ class SitemapController extends Controller
         return response(implode("\n", $lines)."\n", 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
     }
 
+    /**
+     * Every page is listed once per published language, so each translation
+     * can be discovered and ranked on its own.
+     */
     private function build(): string
     {
-        $urls = [
-            $this->url(route('site.home'), null, '1.0', 'daily'),
-            $this->url(route('site.about'), null, '0.8'),
-            $this->url(route('site.services.index'), null, '0.8'),
-            $this->url(route('site.solutions.index'), null, '0.8'),
-            $this->url(route('site.products.index'), null, '0.9'),
-            $this->url(route('site.logistics'), null, '0.8'),
-            $this->url(route('site.industries.index'), null, '0.7'),
-            $this->url(route('site.projects.index'), null, '0.8'),
-            $this->url(route('site.presence'), null, '0.6'),
-            $this->url(route('site.team.index'), null, '0.6'),
-            $this->url(route('site.insights.index'), null, '0.7'),
-            $this->url(route('site.faq'), null, '0.5'),
-            $this->url(route('site.contact'), null, '0.9'),
-            $this->url(route('site.quote'), null, '0.9'),
+        $landing = [
+            ['site.home', '1.0', 'daily'],
+            ['site.products.index', '0.9', 'weekly'],
+            ['site.contact', '0.9', 'weekly'],
+            ['site.quote', '0.9', 'weekly'],
+            ['site.about', '0.8', 'weekly'],
+            ['site.services.index', '0.8', 'weekly'],
+            ['site.solutions.index', '0.8', 'weekly'],
+            ['site.logistics', '0.8', 'weekly'],
+            ['site.projects.index', '0.8', 'weekly'],
+            ['site.industries.index', '0.7', 'weekly'],
+            ['site.insights.index', '0.7', 'weekly'],
+            ['site.presence', '0.6', 'weekly'],
+            ['site.team.index', '0.6', 'weekly'],
+            ['site.faq', '0.5', 'weekly'],
         ];
 
         $collections = [
@@ -67,18 +72,26 @@ class SitemapController extends Controller
             [TeamMember::class, 'site.team.show', '0.4'],
         ];
 
-        foreach ($collections as [$model, $route, $priority]) {
-            foreach ($model::query()->where('is_active', true)->get(['slug', 'updated_at']) as $record) {
-                $urls[] = $this->url(route($route, $record->slug), $record->updated_at, $priority);
+        $urls = [];
+
+        foreach (Locales::codes() as $locale) {
+            foreach ($landing as [$name, $priority, $frequency]) {
+                $urls[] = $this->url(Locales::url($name, [], $locale), null, $priority, $frequency);
             }
-        }
 
-        foreach (Post::query()->published()->get(['slug', 'updated_at']) as $post) {
-            $urls[] = $this->url(route('site.insights.show', $post->slug), $post->updated_at, '0.6');
-        }
+            foreach ($collections as [$model, $route, $priority]) {
+                foreach ($model::query()->where('is_active', true)->get(['slug', 'updated_at']) as $record) {
+                    $urls[] = $this->url(Locales::url($route, [$record->slug], $locale), $record->updated_at, $priority);
+                }
+            }
 
-        foreach (Page::query()->published()->get(['slug', 'updated_at']) as $page) {
-            $urls[] = $this->url(route('site.page', $page->slug), $page->updated_at, '0.4');
+            foreach (Post::query()->published()->get(['slug', 'updated_at']) as $post) {
+                $urls[] = $this->url(Locales::url('site.insights.show', [$post->slug], $locale), $post->updated_at, '0.6');
+            }
+
+            foreach (Page::query()->published()->get(['slug', 'updated_at']) as $page) {
+                $urls[] = $this->url(Locales::url('site.page', [$page->slug], $locale), $page->updated_at, '0.4');
+            }
         }
 
         return '<?xml version="1.0" encoding="UTF-8"?>'."\n"

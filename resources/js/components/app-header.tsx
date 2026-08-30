@@ -167,7 +167,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                             {item.title}
                                         </Link>
                                         {isCurrentUrl(item.href) && (
-                                            <div className="absolute bottom-0 start-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
+                                            <div className="absolute start-0 bottom-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>
                                 ))}

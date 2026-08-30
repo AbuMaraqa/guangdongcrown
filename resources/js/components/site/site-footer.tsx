@@ -1,4 +1,3 @@
-import { Link } from '@inertiajs/react';
 import {
     Facebook,
     Instagram,
@@ -11,6 +10,7 @@ import {
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { Reveal } from '@/animation';
+import { Link } from '@/components/site/link';
 import { Container, SiteLink } from '@/components/site/primitives';
 import { useTranslations } from '@/hooks/use-translations';
 import type { SiteChrome } from '@/types/site';
@@ -33,7 +33,10 @@ const SOCIAL_LABELS: Record<string, string> = {
     wechat: 'WeChat',
 };
 
-const COLUMNS: { titleKey: string; links: { labelKey: string; href: string }[] }[] = [
+const COLUMNS: {
+    titleKey: string;
+    links: { labelKey: string; href: string }[];
+}[] = [
     {
         titleKey: 'Company',
         links: [
@@ -46,7 +49,8 @@ const COLUMNS: { titleKey: string; links: { labelKey: string; href: string }[] }
     {
         titleKey: 'What we do',
         links: [
-            { labelKey: 'Aluminium products', href: '/products' },
+            { labelKey: 'Our products', href: '/our-products' },
+            { labelKey: 'Catalogue', href: '/catalogue' },
             { labelKey: 'Logistics', href: '/logistics' },
             { labelKey: 'Solutions', href: '/solutions' },
             { labelKey: 'Industries', href: '/industries' },
@@ -191,7 +195,9 @@ export function SiteFooter({ chrome }: { chrome: SiteChrome }) {
                     <div className="grid gap-10 sm:grid-cols-3">
                         {COLUMNS.map((column) => (
                             <div key={column.titleKey}>
-                                <p className="site-eyebrow">{t(column.titleKey)}</p>
+                                <p className="site-eyebrow">
+                                    {t(column.titleKey)}
+                                </p>
                                 <ul className="mt-5 space-y-3">
                                     {column.links.map((link) => (
                                         <li key={link.href}>

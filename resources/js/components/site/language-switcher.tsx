@@ -1,5 +1,5 @@
-import { Globe } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { LocaleFlag } from '@/components/locale-flag';
 import { useTranslations } from '@/hooks/use-translations';
 import { cn } from '@/lib/utils';
 
@@ -57,7 +57,9 @@ export function LanguageSwitcher({ className }: { className?: string }) {
                 aria-label={t('Change language')}
                 className="flex items-center gap-2 rounded-sm px-2.5 py-2 text-sm text-[var(--site-muted)] transition-colors hover:text-[var(--site-fg)]"
             >
-                <Globe aria-hidden="true" className="size-4" />
+                {active && (
+                    <LocaleFlag region={active.flag} label={active.name} />
+                )}
                 <span className="font-medium">{active?.native ?? locale}</span>
             </button>
 
@@ -73,14 +75,20 @@ export function LanguageSwitcher({ className }: { className?: string }) {
                                 lang={option.code}
                                 dir={option.direction}
                                 role="menuitem"
-                                aria-current={option.current ? 'true' : undefined}
+                                aria-current={
+                                    option.current ? 'true' : undefined
+                                }
                                 className={cn(
-                                    'block px-4 py-2.5 text-sm transition-colors hover:bg-[var(--color-graphite-100)]',
+                                    'flex items-center gap-2.5 px-4 py-2.5 text-start text-sm transition-colors hover:bg-[var(--color-graphite-100)]',
                                     option.current
                                         ? 'text-[var(--site-accent)]'
                                         : 'text-[var(--site-fg)]',
                                 )}
                             >
+                                <LocaleFlag
+                                    region={option.flag}
+                                    label={option.name}
+                                />
                                 {option.native}
                             </a>
                         </li>

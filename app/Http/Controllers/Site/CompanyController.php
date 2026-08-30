@@ -14,6 +14,7 @@ use App\Models\Milestone;
 use App\Models\Page;
 use App\Models\Service;
 use App\Models\TeamMember;
+use App\Support\Locales;
 use App\Support\Translated;
 use Inertia\Response;
 
@@ -47,7 +48,7 @@ class CompanyController extends SiteController
                 TeamMember::query()->active()->where('is_leadership', true)->ordered()->with('photo')->get()
             )->resolve(),
             'locations' => $this->locations(),
-            'breadcrumbs' => $this->trail([['name' => 'About', 'url' => route('site.about')]]),
+            'breadcrumbs' => $this->trail([['name' => 'About', 'url' => Locales::url('site.about')]]),
         ], [
             'title' => 'About the company',
             'description' => Translated::get($this->company->description),
@@ -62,7 +63,7 @@ class CompanyController extends SiteController
         return $this->page('site/team/index', [
             'leadership' => TeamMemberResource::collection($members->where('is_leadership', true))->resolve(),
             'members' => TeamMemberResource::collection($members->where('is_leadership', false))->resolve(),
-            'breadcrumbs' => $this->trail([['name' => 'Team', 'url' => route('site.team.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Team', 'url' => Locales::url('site.team.index')]]),
         ], [
             'title' => 'Our team',
             'description' => 'The people accountable for delivery, quality and customer service.',
@@ -81,8 +82,8 @@ class CompanyController extends SiteController
                 TeamMember::query()->active()->whereKeyNot($member->id)->ordered()->with('photo')->limit(4)->get()
             )->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Team', 'url' => route('site.team.index')],
-                ['name' => $member->name, 'url' => route('site.team.show', $member)],
+                ['name' => 'Team', 'url' => Locales::url('site.team.index')],
+                ['name' => $member->name, 'url' => Locales::url('site.team.show', [$member])],
             ]),
         ], [
             'title' => $member->name,
@@ -96,7 +97,7 @@ class CompanyController extends SiteController
     {
         return $this->page('site/global-presence', [
             'locations' => $this->locations(),
-            'breadcrumbs' => $this->trail([['name' => 'Global presence', 'url' => route('site.presence')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Global presence', 'url' => Locales::url('site.presence')]]),
         ], [
             'title' => 'Global presence',
             'description' => 'Where we operate and the markets we ship to.',
@@ -117,7 +118,7 @@ class CompanyController extends SiteController
                         'answer' => $faq->answer,
                     ])->values()->all(),
                 ])->values()->all(),
-            'breadcrumbs' => $this->trail([['name' => 'FAQ', 'url' => route('site.faq')]]),
+            'breadcrumbs' => $this->trail([['name' => 'FAQ', 'url' => Locales::url('site.faq')]]),
         ], [
             'title' => 'Frequently asked questions',
             'schema' => array_filter([$this->schema->faq($faqs)]),
@@ -138,7 +139,7 @@ class CompanyController extends SiteController
                 'image' => $page->image ? (new MediaResource($page->image))->resolve() : null,
                 'updatedAt' => $page->updated_at?->toIso8601String(),
             ],
-            'breadcrumbs' => $this->trail([['name' => $page->title, 'url' => route('site.page', $page)]]),
+            'breadcrumbs' => $this->trail([['name' => $page->title, 'url' => Locales::url('site.page', [$page])]]),
         ], [
             'title' => $page->title,
             'description' => $page->excerpt,

@@ -14,15 +14,34 @@ use App\Models\Post;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\TeamMember;
+use App\Support\Locales;
 use Carbon\CarbonInterface;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
     private const WINDOW_DAYS = 30;
+
+    /**
+     * Switches the interface language for the signed-in user only. The public
+     * site's language is decided by the URL and is unaffected.
+     */
+    public function locale(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'locale' => ['required', 'string', Rule::in(Locales::codes())],
+        ]);
+
+        $request->user()->forceFill(['locale' => $validated['locale']])->save();
+
+        return back();
+    }
 
     public function __invoke(): Response
     {

@@ -17,6 +17,7 @@ class ResourceRegistry
         Resources\PageResource::class,
         Resources\ProductCategoryResource::class,
         Resources\ProductResource::class,
+        Resources\CatalogueResource::class,
         Resources\ServiceResource::class,
         Resources\SolutionResource::class,
         Resources\IndustryResource::class,
@@ -82,9 +83,12 @@ class ResourceRegistry
         $groups = [];
 
         foreach ($this->all() as $key => $resource) {
-            $groups[$resource->group()][] = [
+            // Group and label are translated here rather than in each resource
+            // so the dashboard can be read in whichever language the operator
+            // has chosen, without duplicating strings per resource class.
+            $groups[__($resource->group())][] = [
                 'key' => $key,
-                'label' => $resource->label(),
+                'label' => __($resource->label()),
                 'icon' => $resource->icon(),
             ];
         }

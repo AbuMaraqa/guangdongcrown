@@ -54,7 +54,10 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
-            'locale' => [
+            // Lazily resolved: Inertia calls share() before route middleware
+            // runs, so reading the locale eagerly would capture it before
+            // SetLocale has applied the one the matched route was registered for.
+            'locale' => fn (): array => [
                 'current' => Locales::current(),
                 'default' => Locales::default(),
                 'direction' => Locales::direction(),
@@ -64,6 +67,10 @@ class HandleInertiaRequests extends Middleware
             // The UI dictionary for the active language. Sent as a whole so a
             // client-side navigation never has to wait on a second request.
             'translations' => fn (): array => $this->translations(),
+            // Branding is needed everywhere — the sign-in screen and the
+            // dashboard rail show the logo too — while the rest of the site
+            // chrome (navigation, footer) is only useful on public pages.
+            'brand' => fn (): array => app(SiteDataService::class)->brand(),
             'site' => fn () => $this->isDashboard($request)
                 ? null
                 : app(SiteDataService::class)->chrome(),
@@ -98,6 +105,8 @@ class HandleInertiaRequests extends Middleware
      */
     private function isDashboard(Request $request): bool
     {
-        return $request->is('admin', 'admin/*', 'settings', 'settings/*', 'login', 'register');
+        // The sign-in screen is deliberately excluded: it is public-facing and
+        // shows the company mark, so it needs the site chrome.
+        return $request->is('admin', 'admin/*', 'settings', 'settings/*');
     }
 }

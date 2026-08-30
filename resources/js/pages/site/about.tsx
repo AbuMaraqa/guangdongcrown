@@ -172,7 +172,7 @@ function Timeline({ milestones }: { milestones: Milestone[] }) {
                 <div className="relative mt-16 ps-8 sm:ps-0">
                     <span
                         aria-hidden="true"
-                        className="absolute top-0 bottom-0 start-1.5 w-px bg-[var(--site-line)] sm:start-[9.5rem]"
+                        className="absolute start-1.5 top-0 bottom-0 w-px bg-[var(--site-line)] sm:start-[9.5rem]"
                     />
 
                     <Stagger className="space-y-14" y={24} stagger={0.1}>
@@ -190,7 +190,7 @@ function Timeline({ milestones }: { milestones: Milestone[] }) {
                                 <div className="relative">
                                     <span
                                         aria-hidden="true"
-                                        className="absolute top-2.5 -start-[1.85rem] size-3 rounded-full border-2 border-[var(--site-bg)] bg-[var(--site-accent)] sm:-start-[1.9rem]"
+                                        className="absolute -start-[1.85rem] top-2.5 size-3 rounded-full border-2 border-[var(--site-bg)] bg-[var(--site-accent)] sm:-start-[1.9rem]"
                                     />
                                     <p className="font-display text-xl leading-snug font-semibold">
                                         {milestone.title}

@@ -316,11 +316,11 @@ abstract class CmsResource
     {
         return [
             'key' => $this->key(),
-            'label' => $this->label(),
-            'singular' => $this->singular(),
+            'label' => __($this->label()),
+            'singular' => __($this->singular()),
             'icon' => $this->icon(),
             'group' => $this->group(),
-            'description' => $this->description(),
+            'description' => $this->description() ? __($this->description()) : null,
             'columns' => $this->columns(),
             'filters' => $this->filters(),
             'fields' => array_map(static fn (Field $field): array => $field->toArray(), $this->fields()),

@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use App\Models\ProjectCategory;
+use App\Support\Locales;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
@@ -40,7 +41,7 @@ class ProjectController extends SiteController
                 'search' => $filters['search'] ?? '',
                 'category' => $filters['category'] ?? '',
             ],
-            'breadcrumbs' => $this->trail([['name' => 'Projects', 'url' => route('site.projects.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Projects', 'url' => Locales::url('site.projects.index')]]),
         ], [
             'title' => 'Projects',
             'description' => 'Delivered aluminium supply and logistics programmes, with measured outcomes.',
@@ -66,8 +67,8 @@ class ProjectController extends SiteController
             'project' => ProjectResource::detailed($project)->resolve(),
             'related' => ProjectResource::collection($related)->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Projects', 'url' => route('site.projects.index')],
-                ['name' => $project->title, 'url' => route('site.projects.show', $project)],
+                ['name' => 'Projects', 'url' => Locales::url('site.projects.index')],
+                ['name' => $project->title, 'url' => Locales::url('site.projects.show', [$project])],
             ]),
         ], [
             'title' => $project->title,

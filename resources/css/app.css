@@ -321,12 +321,6 @@
         height: auto;
     }
 
-    .site-prose figure figcaption {
-        margin-top: 0.75rem;
-        font-size: 0.8125rem;
-        color: var(--site-muted);
-    }
-
     /* Hairline rule used to structure the editorial grid. */
     .site-rule {
         border-color: var(--site-line);
@@ -465,6 +459,52 @@
     }
 
     [dir='rtl'] .site-prose {
+        line-height: 1.9;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Simplified Chinese
+|--------------------------------------------------------------------------
+|
+| Chinese runs left to right, so nothing needs mirroring — only the type.
+|
+| No CJK webfont is loaded. A Simplified Chinese face covers thousands of
+| glyphs and weighs megabytes, which would cost far more than it returns on a
+| product site; every device that reads Chinese already ships a good one. The
+| Latin faces stay first in the stack so product codes, alloy numbers and
+| dimensions keep the brand typography, and the system face picks up the Han
+| glyphs it cannot draw.
+|
+*/
+
+@layer base {
+    :lang(zh) {
+        --font-sans:
+            'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+            'Noto Sans CJK SC', 'Source Han Sans SC', ui-sans-serif, system-ui,
+            sans-serif;
+        --font-display:
+            'Archivo', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+            'Noto Sans CJK SC', 'Source Han Sans SC', ui-sans-serif, system-ui,
+            sans-serif;
+    }
+
+    /* Han characters have no case, and the tracking used to make Latin
+       eyebrows feel deliberate just pulls them apart. */
+    :lang(zh) .site-eyebrow {
+        text-transform: none;
+        letter-spacing: 0.02em;
+    }
+
+    :lang(zh) .site-display {
+        letter-spacing: 0;
+        line-height: 1.3;
+    }
+
+    /* Dense square glyphs need more leading than Latin to stay readable. */
+    :lang(zh) .site-prose {
         line-height: 1.9;
     }
 }

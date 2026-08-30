@@ -125,7 +125,7 @@ test('seo overrides are stored and cleared with the record', function () {
         'seo' => ['meta_title' => 'Custom title', 'robots' => 'noindex,follow'],
     ])->assertRedirect();
 
-    expect($product->fresh()->seo?->meta_title)->toBe('Custom title');
+    expect($product->fresh()->seoFor('en')?->meta_title)->toBe('Custom title');
 
     $this->put("/admin/content/products/{$product->id}", [
         'name' => $product->name,
@@ -135,7 +135,7 @@ test('seo overrides are stored and cleared with the record', function () {
         'seo' => ['meta_title' => '', 'robots' => ''],
     ])->assertRedirect();
 
-    expect($product->fresh()->seo)->toBeNull();
+    expect($product->fresh()->seoFor('en'))->toBeNull();
 });
 
 test('a gallery only accepts existing media', function () {

@@ -16,7 +16,9 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { toast } from 'sonner';
 import { AdminIcon } from '@/components/admin/admin-icon';
+import { AdminLanguageSwitcher } from '@/components/admin/language-switcher';
 import AppearanceToggleTab from '@/components/appearance-tabs';
+import { BrandMark } from '@/components/brand-mark';
 import { Badge } from '@/components/ui/badge';
 import {
     DropdownMenu,
@@ -26,6 +28,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useDocumentLocale } from '@/hooks/use-document-locale';
+import { useTranslations } from '@/hooks/use-translations';
 import { cn } from '@/lib/utils';
 import type { User } from '@/types/auth';
 
@@ -48,6 +52,9 @@ type StaticLink = {
  */
 export default function AdminLayout({ children }: { children: ReactNode }) {
     const page = usePage();
+    const { t } = useTranslations();
+
+    useDocumentLocale();
     const admin = page.props.admin as AdminShared | null;
     const user = page.props.auth.user as User;
     const abilities = (page.props.auth.abilities ?? []) as string[];
@@ -78,16 +85,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         !ability || abilities.includes('*') || abilities.includes(ability);
 
     const primary: StaticLink[] = [
-        { label: 'Overview', href: '/admin', icon: LayoutDashboard },
+        { label: t('Overview'), href: '/admin', icon: LayoutDashboard },
         {
-            label: 'Enquiries',
+            label: t('Enquiries'),
             href: '/admin/enquiries',
             icon: Inbox,
             ability: 'inquiries.view',
             badge: admin?.unreadInquiries,
         },
         {
-            label: 'Media library',
+            label: t('Media library'),
             href: '/admin/media',
             icon: MediaIcon,
             ability: 'media.view',
@@ -96,13 +103,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     const system: StaticLink[] = [
         {
-            label: 'Settings',
+            label: t('Settings'),
             href: '/admin/settings',
             icon: Settings,
             ability: 'settings.view',
         },
         {
-            label: 'Accounts',
+            label: t('Accounts'),
             href: '/admin/users',
             icon: UserCog,
             ability: 'users.manage',
@@ -113,13 +120,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="flex h-full flex-col">
             <div className="flex h-16 shrink-0 items-center justify-between border-b px-5">
                 <Link href="/admin" className="flex items-center gap-2.5">
-                    <span className="flex size-8 items-center justify-center rounded-md bg-primary font-semibold text-primary-foreground">
-                        GC
-                    </span>
+                    <BrandMark className="h-9 text-base" />
                     <span className="text-sm leading-tight font-semibold">
-                        {page.props.name as string}
+                        <span className="sr-only">
+                            {page.props.name as string}
+                        </span>
                         <span className="block text-xs font-normal text-muted-foreground">
-                            Content dashboard
+                            {t('Content dashboard')}
                         </span>
                     </span>
                 </Link>
@@ -128,14 +135,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     onClick={() => setMobileOpen(false)}
                     className="-me-2 rounded-md p-2 hover:bg-accent lg:hidden"
                 >
-                    <span className="sr-only">Close navigation</span>
+                    <span className="sr-only">{t('Close navigation')}</span>
                     <X className="size-4" />
                 </button>
             </div>
 
             <nav
                 className="flex-1 space-y-6 overflow-y-auto px-3 py-5"
-                aria-label="Dashboard"
+                aria-label={t('Dashboard')}
             >
                 <NavGroup>
                     {primary
@@ -177,7 +184,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 )}
 
                 {system.some((link) => can(link.ability)) && (
-                    <NavGroup label="System">
+                    <NavGroup label={t('System')}>
                         {system
                             .filter((link) =>
                                 link.ability === 'users.manage'
@@ -209,7 +216,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 >
                     <ExternalLink aria-hidden="true" className="size-4" />
-                    View website
+                    {t('View website')}
                 </a>
             </div>
         </div>
@@ -225,7 +232,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 <div className="fixed inset-0 z-50 lg:hidden">
                     <button
                         type="button"
-                        aria-label="Close navigation"
+                        aria-label={t('Close navigation')}
                         onClick={() => setMobileOpen(false)}
                         className="absolute inset-0 bg-black/50"
                     />
@@ -242,13 +249,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         onClick={() => setMobileOpen(true)}
                         className="-ms-2 rounded-md p-2 hover:bg-accent lg:hidden"
                     >
-                        <span className="sr-only">Open navigation</span>
+                        <span className="sr-only">{t('Open navigation')}</span>
                         <Menu className="size-5" />
                     </button>
 
                     <div id="admin-topbar" className="min-w-0 flex-1" />
 
                     <div className="flex items-center gap-2">
+                        <AdminLanguageSwitcher />
+
                         <AppearanceToggleTab className="hidden sm:flex" />
 
                         <DropdownMenu>
@@ -284,12 +293,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link href="/settings/profile">
-                                        Profile
+                                        {t('Profile')}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
                                     <Link href="/settings/security">
-                                        Security
+                                        {t('Security')}
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
@@ -301,7 +310,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                                         aria-hidden="true"
                                         className="size-4"
                                     />
-                                    Sign out
+                                    {t('Sign out')}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

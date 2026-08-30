@@ -1,7 +1,7 @@
-import { Link } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Reveal, TextReveal } from '@/animation';
+import { Link } from '@/components/site/link';
 import { Container, Eyebrow } from '@/components/site/primitives';
 import { cn } from '@/lib/utils';
 import type { Crumb } from '@/types/site';

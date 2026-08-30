@@ -9,6 +9,7 @@ use App\Http\Resources\PostResource;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Support\Locales;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
@@ -58,7 +59,7 @@ class InsightController extends SiteController
                 'category' => $filters['category'] ?? '',
                 'tag' => $filters['tag'] ?? '',
             ],
-            'breadcrumbs' => $this->trail([['name' => 'Insights', 'url' => route('site.insights.index')]]),
+            'breadcrumbs' => $this->trail([['name' => 'Insights', 'url' => Locales::url('site.insights.index')]]),
         ], [
             'title' => 'Insights',
             'description' => 'Technical notes and market commentary on aluminium supply and international freight.',
@@ -90,8 +91,8 @@ class InsightController extends SiteController
             'post' => PostResource::detailed($post)->resolve(),
             'related' => PostResource::collection($related)->resolve(),
             'breadcrumbs' => $this->trail([
-                ['name' => 'Insights', 'url' => route('site.insights.index')],
-                ['name' => $post->title, 'url' => route('site.insights.show', $post)],
+                ['name' => 'Insights', 'url' => Locales::url('site.insights.index')],
+                ['name' => $post->title, 'url' => Locales::url('site.insights.show', [$post])],
             ]),
         ], [
             'title' => $post->title,

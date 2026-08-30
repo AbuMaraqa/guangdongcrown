@@ -1,7 +1,7 @@
-import { Link } from '@inertiajs/react';
 import { Newspaper } from 'lucide-react';
 import { ImageReveal, Reveal, Stagger } from '@/animation';
 import { PostCard } from '@/components/site/cards';
+import { Link } from '@/components/site/link';
 import { FilterBar, Pagination } from '@/components/site/listing';
 import { PageHeader } from '@/components/site/page-header';
 import {
