@@ -1,5 +1,6 @@
 import { ImageReveal, Reveal, Stagger } from '@/animation';
 import { ProjectCard, ServiceCard } from '@/components/site/cards';
+import { ContainerYard } from '@/components/site/container-yard';
 import { Prose } from '@/components/site/listing';
 import { PageHeader } from '@/components/site/page-header';
 import {
@@ -67,6 +68,28 @@ export default function Logistics({
                     />
                 </Container>
             )}
+
+            {/* The yard itself: the half of the service that moves boxes. */}
+            <Section
+                invert
+                className="relative overflow-hidden border-y border-[var(--site-line)]"
+                spacing="tight"
+            >
+                <Container>
+                    <SectionHeading
+                        eyebrow="Container handling"
+                        title="Sealed at origin, tracked to the door"
+                        description="Ocean and air freight, bonded storage and inland delivery are booked as one movement, so the yard, the vessel and the final leg all work to the same schedule."
+                        action={
+                            <TextArrowLink href="/request-a-quotation">
+                                Request a quotation
+                            </TextArrowLink>
+                        }
+                    />
+                </Container>
+
+                <ContainerYard className="mt-16" />
+            </Section>
 
             {services.length > 0 && (
                 <Section>

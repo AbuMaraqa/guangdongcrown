@@ -139,9 +139,12 @@ function isCurrent(pathname: string, href: string): boolean {
 export function SiteHeader({
     chrome,
     overlay,
+    overlayTone = 'dark',
 }: {
     chrome: SiteChrome;
     overlay: boolean;
+    /** Tone of the hero behind a transparent header: light text on `dark`, dark text on `light`. */
+    overlayTone?: 'dark' | 'light';
 }) {
     const { url } = usePage();
     const { t } = useTranslations();
@@ -210,14 +213,16 @@ export function SiteHeader({
     }, []);
 
     const transparent = overlay && !scrolled && !openGroup && !mobileOpen;
+    const inverted = transparent && overlayTone === 'dark';
 
     return (
         <header
             className={cn(
                 'fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-500',
                 transparent
-                    ? 'site-invert border-b border-transparent bg-transparent'
+                    ? 'border-b border-transparent bg-transparent'
                     : 'border-b border-[var(--site-line)] bg-[var(--site-surface)]/92 backdrop-blur-xl',
+                inverted && 'site-invert',
             )}
             onMouseLeave={schedulePanelClose}
         >
@@ -228,7 +233,7 @@ export function SiteHeader({
                         className="flex shrink-0 items-center gap-3"
                         aria-label={`${chrome.company.name} — home`}
                     >
-                        <Wordmark chrome={chrome} inverted={transparent} />
+                        <Wordmark chrome={chrome} inverted={inverted} />
                     </Link>
 
                     <nav aria-label="Primary" className="hidden lg:block">

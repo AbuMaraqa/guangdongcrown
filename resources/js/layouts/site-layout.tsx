@@ -44,8 +44,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         { success: string | null; error: string | null } | undefined;
     const accent = chrome.footer.accent;
 
-    // The home page is the only route with a full-bleed dark hero behind
-    // the header; everywhere else the header sits on the page background.
+    // The home page is the only route with a full-bleed hero behind the
+    // header (the light 3D mark hero, so the header keeps dark text);
+    // everywhere else the header sits on the page background.
     const overlay = page.component === 'site/home';
 
     useDocumentLocale();
@@ -85,7 +86,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
                 Skip to content
             </a>
 
-            <SiteHeader chrome={chrome} overlay={overlay} />
+            <SiteHeader chrome={chrome} overlay={overlay} overlayTone="light" />
 
             <main
                 id="main"

@@ -1,24 +1,27 @@
-import { ArrowDown } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { usePage } from '@inertiajs/react';
 import {
-    gsap,
     HorizontalScroll,
     ImageReveal,
     Parallax,
-    prefersReducedMotion,
     Reveal,
     Stagger,
-    TextReveal,
 } from '@/animation';
 import {
     IndustryCard,
     PostCard,
     ProductCard,
     ProjectCard,
-    ServiceCard,
     SolutionCard,
     TestimonialCard,
 } from '@/components/site/cards';
+import { CapabilityStack } from '@/components/site/immersive/capability-stack';
+import { CrownHero } from '@/components/site/immersive/crown-hero';
+import { ElectricMark } from '@/components/site/immersive/electric-mark';
+import { LogoStory } from '@/components/site/immersive/logo-story';
+import type { StoryChapter } from '@/components/site/immersive/logo-story';
+import { ScrollExpand } from '@/components/site/immersive/scroll-expand';
+import { ScrollPortal } from '@/components/site/immersive/scroll-portal';
+import type { PortalFrame } from '@/components/site/immersive/scroll-portal';
 import { Link } from '@/components/site/link';
 import {
     Container,
@@ -35,6 +38,7 @@ import {
     StatBand,
 } from '@/components/site/sections';
 import { SeoHead } from '@/components/site/seo-head';
+import { useTranslations } from '@/hooks/use-translations';
 import type {
     Credential,
     FaqItem,
@@ -45,6 +49,7 @@ import type {
     ProjectCard as ProjectCardType,
     SeoPayload,
     ServiceCard as ServiceCardType,
+    SiteChrome,
     SiteLocation,
     SolutionCard as SolutionCardType,
     Stat,
@@ -79,6 +84,18 @@ type HomeProps = {
     posts: PostCardType[];
 };
 
+const photo = (id: string) =>
+    `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=2400&q=80`;
+
+/** Editorial photography for the scroll scenes (Unsplash licence). */
+const SCENE_IMAGES = {
+    port: photo('1494412574643-ff11b0a5c1c3'),
+    network: photo('1451187580459-43490279c0fa'),
+    ship: photo('1605745341112-85968b19335b'),
+    warehouse: photo('1586528116311-ad8dd3c8310d'),
+    facade: photo('1486406146926-c627a92ad1ab'),
+};
+
 export default function Home({
     seo,
     hero,
@@ -95,11 +112,117 @@ export default function Home({
     faqs,
     posts,
 }: HomeProps) {
+    const { t } = useTranslations();
+    const chrome = usePage().props.site as SiteChrome | null;
+    const companyName = chrome?.company.name ?? 'Guang Dong Crown';
+
+    // Five chapters, matching the five beats of the 3D story timeline.
+    const chapters: StoryChapter[] = [
+        {
+            label: t('The specification'),
+            title: t('It starts with a single mark.'),
+            body: t(
+                'An alloy, a temper, a tolerance. Every order begins as a drawing we are accountable for.',
+            ),
+        },
+        {
+            label: t('The material'),
+            title: t('Extruded, finished, certified.'),
+            body: t(
+                'Material is produced to your drawing and checked against its published standard before it leaves the line.',
+            ),
+        },
+        {
+            label: t('Block by block'),
+            title: t('Structures rise from the material.'),
+            body: t(
+                'Facades, frames and systems take shape from the profiles, sheet and coil we supply.',
+            ),
+        },
+        {
+            label: t('Connected'),
+            title: t('Freight, storage and delivery, lit end to end.'),
+            body: t(
+                'Ocean and air freight, bonded warehousing and inland transport, coordinated as one network.',
+            ),
+        },
+        {
+            label: t('Delivered'),
+            title: t('From above, it was always the mark.'),
+            body: t(
+                'Material and movement held by one accountable partner, in the same shape we started with.',
+            ),
+        },
+    ];
+
+    const portalFrames: PortalFrame[] = [
+        {
+            eyebrow: t('The network'),
+            title: t('Material moving across borders.'),
+            body: t(
+                'Ocean and air freight coordinated against one schedule and one point of contact.',
+            ),
+            src: SCENE_IMAGES.network,
+            alt: t('City lights spread across the Earth at night'),
+        },
+        {
+            eyebrow: t('Ocean freight'),
+            title: t('Packed, loaded and tracked.'),
+            body: t(
+                'Profiles, sheet and coil packed for transit and followed from the port of loading.',
+            ),
+            src: SCENE_IMAGES.ship,
+            alt: t('A loaded container ship at sea'),
+        },
+        {
+            eyebrow: t('Warehousing'),
+            title: t('Stored, staged, released on time.'),
+            body: t(
+                'Bonded storage and inland delivery keep material close to the programme it serves.',
+            ),
+            src: SCENE_IMAGES.warehouse,
+            alt: t('Racked goods inside a large warehouse'),
+        },
+        {
+            eyebrow: t('On site'),
+            title: t('Down to a single facade.'),
+            body: t(
+                'The work is measured where it lands: in the frames, curtain walls and structures it becomes.',
+            ),
+            src: SCENE_IMAGES.facade,
+            alt: t('Glass and aluminium office towers seen from street level'),
+        },
+    ];
+
     return (
         <>
             <SeoHead seo={seo} />
 
-            <Hero hero={hero} />
+            <CrownHero hero={hero} companyName={companyName} />
+
+            <section aria-labelledby="scale-title" className="site-invert">
+                <ScrollExpand
+                    src={hero.image?.url ?? SCENE_IMAGES.port}
+                    alt={
+                        hero.image?.alt ||
+                        t('Container cranes and stacked containers at a port')
+                    }
+                    title={t('Built to move')}
+                    scrollHint={t('Scroll')}
+                >
+                    <h2
+                        id="scale-title"
+                        className="site-display text-3xl text-balance text-white sm:text-5xl"
+                    >
+                        {t('Made to specification. Moved to site.')}
+                    </h2>
+                    <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
+                        {t(
+                            'From the extrusion line to the job site, one partner carries the material and the responsibility for getting it there.',
+                        )}
+                    </p>
+                </ScrollExpand>
+            </section>
 
             <StatBand stats={stats} />
 
@@ -140,28 +263,29 @@ export default function Home({
             )}
 
             {services.length > 0 && (
-                <Band className="border-t border-[var(--site-line)]">
+                <Band
+                    spacing="tight"
+                    className="border-t border-[var(--site-line)] pb-0 sm:pb-0 lg:pb-0"
+                >
                     <Container>
                         <SectionHeading
-                            eyebrow="What we do"
-                            title="Four capabilities, one accountable partner"
-                            description="Material and movement handled by the same team, so specification, packing and transit decisions are never made in isolation."
+                            eyebrow={t('What we do')}
+                            title={t(
+                                'Four capabilities, one accountable partner',
+                            )}
+                            description={t(
+                                'Material and movement handled by the same team, so specification, packing and transit decisions are never made in isolation.',
+                            )}
                             action={
                                 <TextArrowLink href="/capabilities">
-                                    All capabilities
+                                    {t('All capabilities')}
                                 </TextArrowLink>
                             }
                         />
-                        <Stagger className="mt-14 grid gap-px bg-[var(--site-line)] sm:grid-cols-2 lg:grid-cols-4">
-                            {services.slice(0, 4).map((service, index) => (
-                                <ServiceCard
-                                    key={service.id}
-                                    service={service}
-                                    index={index}
-                                />
-                            ))}
-                        </Stagger>
                     </Container>
+                    <div className="mx-auto max-w-[88rem] pt-14 pb-24 lg:pb-32">
+                        <CapabilityStack services={services.slice(0, 4)} />
+                    </div>
                 </Band>
             )}
 
@@ -200,7 +324,27 @@ export default function Home({
                 </Band>
             )}
 
+            <LogoStory
+                eyebrow={t('From material to network')}
+                heading={t('How a specification becomes a skyline.')}
+                chapters={chapters}
+            />
+
             {solutions.length > 0 && <LogisticsBand solutions={solutions} />}
+
+            <section aria-labelledby="reach-title" className="site-invert">
+                <Container className="pt-24 pb-16 lg:pt-32">
+                    <Eyebrow>{t('Reach')}</Eyebrow>
+                    <h2
+                        id="reach-title"
+                        className="site-display mt-5 max-w-2xl text-3xl text-balance sm:text-4xl"
+                    >
+                        {t('From the global network down to a single facade.')}
+                    </h2>
+                </Container>
+
+                <ScrollPortal frames={portalFrames} />
+            </section>
 
             {industries.length > 0 && (
                 <Band>
@@ -308,6 +452,76 @@ export default function Home({
                 </Band>
             )}
 
+            <Band className="border-t border-[var(--site-line)]">
+                <Container>
+                    <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+                        <Reveal>
+                            <Eyebrow className="mb-5">
+                                {t('Always connected')}
+                            </Eyebrow>
+                            <h2 className="site-display text-3xl text-balance sm:text-4xl">
+                                {t(
+                                    'One mark, carried from the mill to the site.',
+                                )}
+                            </h2>
+                        </Reveal>
+                        <Reveal delay={0.1}>
+                            <p className="text-lg leading-relaxed text-pretty text-[var(--site-muted)]">
+                                {t(
+                                    'Material and movement run through the same team, so the specification that leaves the extrusion line is the one that arrives on site.',
+                                )}
+                            </p>
+                        </Reveal>
+                    </div>
+
+                    <div className="mt-16 grid gap-6 lg:grid-cols-2">
+                        {(
+                            [
+                                {
+                                    theme: 'dark',
+                                    panel: 'bg-[var(--color-graphite-950)] ring-[var(--color-graphite-950)]',
+                                    caption: 'text-white/60',
+                                    color: '#c8f3f7',
+                                    glowColor: '#0aa6b8',
+                                    fill: 0.25,
+                                },
+                                {
+                                    theme: 'light',
+                                    panel: 'bg-[var(--site-surface)] ring-[var(--site-line)]',
+                                    caption: 'text-[var(--site-muted)]',
+                                    color: '#0aa6b8',
+                                    glowColor: '#077d8b',
+                                    fill: 0.15,
+                                },
+                            ] as const
+                        ).map((panel) => (
+                            <figure
+                                key={panel.theme}
+                                className={`relative h-[360px] overflow-hidden ring-1 sm:h-[480px] ${panel.panel}`}
+                            >
+                                <ElectricMark
+                                    theme={panel.theme}
+                                    color={panel.color}
+                                    glowColor={panel.glowColor}
+                                    fill={panel.fill}
+                                    scale={0.55}
+                                    strands={4}
+                                    bend={0.6}
+                                    crackle={1.5}
+                                    arcs={1}
+                                    speed={2.5}
+                                />
+                                <figcaption
+                                    className={`pointer-events-none absolute inset-x-0 bottom-0 p-6 text-xs tracking-[0.2em] uppercase ${panel.caption}`}
+                                >
+                                    {t('Hover to charge · Click to discharge')}
+                                </figcaption>
+                            </figure>
+                        ))}
+                    </div>
+                </Container>
+            </Band>
+
             {posts.length > 0 && (
                 <Band>
                     <Container>
@@ -357,148 +571,6 @@ export default function Home({
                 </Band>
             )}
         </>
-    );
-}
-
-function Hero({ hero }: { hero: HomeProps['hero'] }) {
-    const ref = useRef<HTMLDivElement>(null);
-
-    // Slow background drift keeps the hero alive without competing with the
-    // headline; scrubbed to scroll so it never animates on its own.
-    useEffect(() => {
-        const element = ref.current;
-
-        if (!element || prefersReducedMotion()) {
-            return;
-        }
-
-        const context = gsap.context(() => {
-            gsap.to('[data-hero-media]', {
-                yPercent: 12,
-                scale: 1.06,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: element,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: true,
-                },
-            });
-
-            gsap.to('[data-hero-scrim]', {
-                opacity: 1,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: element,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: true,
-                },
-            });
-        }, element);
-
-        return () => context.revert();
-    }, []);
-
-    const headline =
-        hero.headline ??
-        'Precision in aluminium. Confidence in global logistics.';
-
-    return (
-        <div ref={ref} className="site-invert relative isolate overflow-hidden">
-            <div className="absolute inset-0 -z-10">
-                {hero.image ? (
-                    <img
-                        data-hero-media
-                        src={hero.image.url}
-                        alt=""
-                        fetchPriority="high"
-                        decoding="sync"
-                        className="h-full w-full object-cover"
-                    />
-                ) : (
-                    <div
-                        data-hero-media
-                        aria-hidden="true"
-                        className="h-full w-full bg-[radial-gradient(120%_120%_at_20%_0%,var(--color-graphite-800),var(--color-graphite-950))]"
-                    />
-                )}
-                <div className="absolute inset-0 bg-[linear-gradient(100deg,var(--color-graphite-950)_18%,rgb(12_14_16/0.72)_58%,rgb(12_14_16/0.35))]" />
-                <div
-                    data-hero-scrim
-                    className="absolute inset-0 bg-[var(--color-graphite-950)] opacity-0"
-                />
-                <div
-                    aria-hidden="true"
-                    className="absolute inset-0 [background-image:linear-gradient(to_right,rgb(255_255_255/0.5)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.5)_1px,transparent_1px)] [background-size:120px_120px] opacity-[0.16]"
-                />
-            </div>
-
-            <Container>
-                <div className="flex min-h-dvh flex-col justify-end pt-32 pb-16 lg:min-h-[92vh] lg:pb-20">
-                    <div className="max-w-4xl">
-                        {hero.eyebrow && (
-                            <Reveal immediate delay={0.1}>
-                                <Eyebrow>{hero.eyebrow}</Eyebrow>
-                            </Reveal>
-                        )}
-
-                        <TextReveal
-                            as="h1"
-                            text={headline}
-                            immediate
-                            delay={0.2}
-                            className="site-display mt-6 text-[2.6rem] leading-[1.03] sm:text-6xl lg:text-[4.75rem]"
-                        />
-
-                        {hero.subheadline && (
-                            <Reveal
-                                immediate
-                                delay={0.55}
-                                className="mt-8 max-w-2xl"
-                            >
-                                <p className="text-lg leading-relaxed text-pretty text-[var(--site-muted)]">
-                                    {hero.subheadline}
-                                </p>
-                            </Reveal>
-                        )}
-
-                        <Reveal
-                            immediate
-                            delay={0.7}
-                            className="mt-10 flex flex-wrap gap-3"
-                        >
-                            {hero.primary && (
-                                <SiteLink href={hero.primary.url} magnetic>
-                                    {hero.primary.label}
-                                </SiteLink>
-                            )}
-                            {hero.secondary && (
-                                <SiteLink
-                                    href={hero.secondary.url}
-                                    tone="outline"
-                                    withArrow={false}
-                                >
-                                    {hero.secondary.label}
-                                </SiteLink>
-                            )}
-                        </Reveal>
-                    </div>
-
-                    <Reveal
-                        immediate
-                        delay={1}
-                        className="mt-16 flex items-center gap-3 text-[0.6875rem] tracking-[0.16em] text-[var(--site-muted)] uppercase"
-                    >
-                        <ArrowDown
-                            aria-hidden="true"
-                            className="size-4 motion-safe:animate-bounce"
-                        />
-                        Scroll to explore
-                    </Reveal>
-                </div>
-            </Container>
-        </div>
     );
 }
 
