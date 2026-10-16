@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useTranslations } from '@/hooks/use-translations';
 import { cn } from '@/lib/utils';
 
 export type FieldSchema = {
@@ -23,6 +24,7 @@ export type FieldSchema = {
     relation?: string;
     from?: string;
     required?: boolean;
+    translatable?: boolean;
     subfields?: FieldSchema[];
 };
 
@@ -61,7 +63,76 @@ type FieldProps = {
  * server-side validation rules and this UI, so a new field never needs a new
  * bespoke screen.
  */
-export function SchemaField({
+export function SchemaField(props: FieldProps) {
+    return props.field.translatable ? (
+        <TranslatableField {...props} />
+    ) : (
+        <PlainField {...props} />
+    );
+}
+
+/**
+ * One input per supported locale, for a value stored as `{ en, ar, … }`.
+ *
+ * The server validates each locale under `name.code`, so every input reads
+ * its own error rather than the field's.
+ */
+function TranslatableField({ field, value, onChange, errors }: FieldProps) {
+    const { locales } = useTranslations();
+    const values =
+        value !== null && typeof value === 'object'
+            ? (value as Record<string, unknown>)
+            : {};
+    const error = errors[field.name];
+
+    return (
+        <fieldset className="flex flex-col gap-2">
+            <legend className="mb-2 text-sm font-medium">
+                {field.label}
+                {field.required && (
+                    <span aria-hidden="true" className="ms-1 text-destructive">
+                        *
+                    </span>
+                )}
+            </legend>
+
+            <div className="grid gap-3 rounded-lg border p-3">
+                {locales.map((locale) => (
+                    <div key={locale.code} dir={locale.direction}>
+                        <PlainField
+                            field={{
+                                ...field,
+                                translatable: false,
+                                help: undefined,
+                                label: locale.native,
+                            }}
+                            value={values[locale.code] ?? ''}
+                            errors={{
+                                [field.name]:
+                                    errors[`${field.name}.${locale.code}`] ??
+                                    '',
+                            }}
+                            onChange={(next) =>
+                                onChange({ ...values, [locale.code]: next })
+                            }
+                        />
+                    </div>
+                ))}
+            </div>
+
+            {field.help && !error && (
+                <p className="text-xs text-muted-foreground">{field.help}</p>
+            )}
+            {error && (
+                <p role="alert" className="text-xs text-destructive">
+                    {error}
+                </p>
+            )}
+        </fieldset>
+    );
+}
+
+function PlainField({
     field,
     value,
     onChange,
@@ -689,12 +760,10 @@ function Repeater({
                                 <SchemaField
                                     field={sub}
                                     value={row[sub.name] ?? ''}
-                                    errors={{
-                                        [sub.name]:
-                                            errors[
-                                                `${field.name}.${index}.${sub.name}`
-                                            ] ?? '',
-                                    }}
+                                    errors={rowErrors(
+                                        errors,
+                                        `${field.name}.${index}.`,
+                                    )}
                                     onChange={(next) => {
                                         const rows = [...value];
                                         rows[index] = {
@@ -778,6 +847,18 @@ function coerceOptionValue(
     const match = choices.find((choice) => String(choice.value) === raw);
 
     return match ? match.value : raw;
+}
+
+/**
+ * Re-keys a repeater row's errors relative to the row, so a sub-field —
+ * including a translatable one reading `name.code` — finds its own messages.
+ */
+function rowErrors(errors: FieldErrors, prefix: string): FieldErrors {
+    return Object.fromEntries(
+        Object.entries(errors)
+            .filter(([key]) => key.startsWith(prefix))
+            .map(([key, message]) => [key.slice(prefix.length), message]),
+    );
 }
 
 function asString(value: unknown): string {

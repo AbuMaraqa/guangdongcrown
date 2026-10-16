@@ -273,7 +273,7 @@ export function SiteHeader({
                         >
                             {t('Request a quotation')}
                         </SiteLink>
-                        <LanguageSwitcher className="hidden sm:block" />
+                        <LanguageSwitcher />
 
                         <button
                             type="button"

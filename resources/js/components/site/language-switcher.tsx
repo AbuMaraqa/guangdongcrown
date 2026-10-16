@@ -60,7 +60,9 @@ export function LanguageSwitcher({ className }: { className?: string }) {
                 {active && (
                     <LocaleFlag region={active.flag} label={active.name} />
                 )}
-                <span className="font-medium">{active?.native ?? locale}</span>
+                <span className="hidden font-medium sm:inline">
+                    {active?.native ?? locale}
+                </span>
             </button>
 
             {open && (

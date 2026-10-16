@@ -24,8 +24,14 @@ export function useSmoothScroll(enabled = true): void {
             }
 
             const lenis = new Lenis({
-                duration: 1.05,
-                easing: (t: number) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+                // Continuous inertia rather than a fixed-duration tween: each
+                // wheel tick adds to the current momentum instead of
+                // restarting an animation, which reads as one long glide.
+                lerp: 0.075,
+                wheelMultiplier: 0.9,
+                smoothWheel: true,
+                // In-page `#anchor` links glide too, clearing the fixed header.
+                anchors: { offset: -96 },
                 // Touch devices keep their native momentum; only the pointer
                 // experience is smoothed.
                 syncTouch: false,

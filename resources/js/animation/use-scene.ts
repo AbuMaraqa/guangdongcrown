@@ -34,15 +34,21 @@ export function useScene<T extends HTMLElement, O>(
         let dispose: (() => void) | null = null;
         let cancelled = false;
 
-        void load(element, JSON.parse(signature) as O).then((cleanup) => {
-            if (cancelled) {
-                cleanup();
+        load(element, JSON.parse(signature) as O)
+            .then((cleanup) => {
+                if (cancelled) {
+                    cleanup();
 
-                return;
-            }
+                    return;
+                }
 
-            dispose = cleanup;
-        });
+                dispose = cleanup;
+            })
+            // A scene that fails to load or mount leaves its static
+            // fallback markup in place rather than an empty section.
+            .catch((error: unknown) => {
+                console.error(error);
+            });
 
         return () => {
             cancelled = true;

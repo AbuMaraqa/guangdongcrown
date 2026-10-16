@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\MediaAsset;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -23,25 +24,32 @@ class MediaService
         $hash = (string) hash_file('sha256', $file->getRealPath());
 
         // Re-uploading a file the library already holds returns the existing
-        // asset, so an editor never creates a second copy by accident.
-        if ($existing = MediaAsset::query()->where('hash', $hash)->first()) {
+        // asset, so an editor never creates a second copy by accident. Only an
+        // asset that actually holds a file counts: a row left behind by an
+        // earlier failed upload must not swallow every later retry.
+        if ($existing = MediaAsset::query()->where('hash', $hash)->whereHas('media')->first()) {
             return $existing;
         }
 
-        $asset = MediaAsset::query()->create([
-            'hash' => $hash,
-            'folder' => $folder,
-            'user_id' => $userId,
-            'title' => Str::headline(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
-        ]);
+        // The row and its file succeed or fail together, so a storage or
+        // conversion failure surfaces as an upload error instead of an empty
+        // asset that can be picked but never displayed.
+        return DB::transaction(function () use ($file, $hash, $userId, $folder): MediaAsset {
+            $asset = MediaAsset::query()->create([
+                'hash' => $hash,
+                'folder' => $folder,
+                'user_id' => $userId,
+                'title' => Str::headline(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
+            ]);
 
-        $asset
-            ->addMedia($file)
-            ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-            ->withCustomProperties($this->dimensions($file))
-            ->toMediaCollection(MediaAsset::COLLECTION);
+            $asset
+                ->addMedia($file)
+                ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                ->withCustomProperties($this->dimensions($file))
+                ->toMediaCollection(MediaAsset::COLLECTION);
 
-        return $asset->refresh();
+            return $asset->refresh();
+        });
     }
 
     /**

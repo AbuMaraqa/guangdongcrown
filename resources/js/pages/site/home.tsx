@@ -8,11 +8,8 @@ import {
 } from '@/animation';
 import {
     IndustryCard,
-    PostCard,
     ProductCard,
-    ProjectCard,
     SolutionCard,
-    TestimonialCard,
 } from '@/components/site/cards';
 import { CapabilityStack } from '@/components/site/immersive/capability-stack';
 import { CrownHero } from '@/components/site/immersive/crown-hero';
@@ -22,7 +19,6 @@ import type { StoryChapter } from '@/components/site/immersive/logo-story';
 import { ScrollExpand } from '@/components/site/immersive/scroll-expand';
 import { ScrollPortal } from '@/components/site/immersive/scroll-portal';
 import type { PortalFrame } from '@/components/site/immersive/scroll-portal';
-import { Link } from '@/components/site/link';
 import {
     Container,
     Eyebrow,
@@ -31,29 +27,18 @@ import {
     SiteLink,
     TextArrowLink,
 } from '@/components/site/primitives';
-import {
-    CoverageMap,
-    CredentialStrip,
-    FaqAccordion,
-    StatBand,
-} from '@/components/site/sections';
+import { CoverageMap } from '@/components/site/sections';
 import { SeoHead } from '@/components/site/seo-head';
 import { useTranslations } from '@/hooks/use-translations';
 import type {
-    Credential,
-    FaqItem,
     IndustryCard as IndustryCardType,
     MediaImage,
-    PostCard as PostCardType,
     ProductCard as ProductCardType,
-    ProjectCard as ProjectCardType,
     SeoPayload,
     ServiceCard as ServiceCardType,
     SiteChrome,
     SiteLocation,
     SolutionCard as SolutionCardType,
-    Stat,
-    Testimonial,
 } from '@/types/site';
 
 type HomeProps = {
@@ -66,7 +51,6 @@ type HomeProps = {
         secondary: { label: string; url: string } | null;
         image: MediaImage | null;
     };
-    stats: Stat[];
     intro: {
         eyebrow: string | null;
         heading: string | null;
@@ -76,12 +60,7 @@ type HomeProps = {
     products: ProductCardType[];
     solutions: SolutionCardType[];
     industries: IndustryCardType[];
-    projects: ProjectCardType[];
-    testimonials: Testimonial[];
-    credentials: Credential[];
     coverage: { countries: string[]; facilities: SiteLocation[] };
-    faqs: FaqItem[];
-    posts: PostCardType[];
 };
 
 const photo = (id: string) =>
@@ -99,18 +78,12 @@ const SCENE_IMAGES = {
 export default function Home({
     seo,
     hero,
-    stats,
     intro,
     services,
     products,
     solutions,
     industries,
-    projects,
-    testimonials,
-    credentials,
     coverage,
-    faqs,
-    posts,
 }: HomeProps) {
     const { t } = useTranslations();
     const chrome = usePage().props.site as SiteChrome | null;
@@ -223,8 +196,6 @@ export default function Home({
                     </p>
                 </ScrollExpand>
             </section>
-
-            <StatBand stats={stats} />
 
             {(intro.heading || intro.body) && (
                 <Band>
@@ -370,31 +341,6 @@ export default function Home({
                 </Band>
             )}
 
-            {projects.length > 0 && (
-                <Band className="border-t border-[var(--site-line)]">
-                    <Container>
-                        <SectionHeading
-                            eyebrow="Evidence"
-                            title="Work we have delivered"
-                            description="Named programmes with the outcome we were measured against."
-                            action={
-                                <TextArrowLink href="/projects">
-                                    All projects
-                                </TextArrowLink>
-                            }
-                        />
-                        <Stagger className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {projects.map((project) => (
-                                <ProjectCard
-                                    key={project.id}
-                                    project={project}
-                                />
-                            ))}
-                        </Stagger>
-                    </Container>
-                </Band>
-            )}
-
             {coverage.facilities.length > 0 && (
                 <Band invert>
                     <Container>
@@ -414,40 +360,6 @@ export default function Home({
                         <div className="mt-14">
                             <CoverageMap locations={coverage.facilities} />
                         </div>
-                    </Container>
-                </Band>
-            )}
-
-            {credentials.length > 0 && (
-                <Band spacing="tight">
-                    <Container>
-                        <SectionHeading
-                            eyebrow="Assurance"
-                            title="Certifications and recognition"
-                            description="Every credential below names its issuing body so you can verify it independently."
-                        />
-                        <div className="mt-12">
-                            <CredentialStrip credentials={credentials} />
-                        </div>
-                    </Container>
-                </Band>
-            )}
-
-            {testimonials.length > 0 && (
-                <Band className="border-t border-[var(--site-line)]">
-                    <Container>
-                        <SectionHeading
-                            eyebrow="Clients"
-                            title="What partners say"
-                        />
-                        <Stagger className="mt-14 grid gap-6 lg:grid-cols-3">
-                            {testimonials.slice(0, 3).map((testimonial) => (
-                                <TestimonialCard
-                                    key={testimonial.id}
-                                    testimonial={testimonial}
-                                />
-                            ))}
-                        </Stagger>
                     </Container>
                 </Band>
             )}
@@ -521,55 +433,6 @@ export default function Home({
                     </div>
                 </Container>
             </Band>
-
-            {posts.length > 0 && (
-                <Band>
-                    <Container>
-                        <SectionHeading
-                            eyebrow="Insights"
-                            title="Notes from the desk"
-                            action={
-                                <TextArrowLink href="/insights">
-                                    All insights
-                                </TextArrowLink>
-                            }
-                        />
-                        <Stagger className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {posts.map((post) => (
-                                <PostCard key={post.id} post={post} />
-                            ))}
-                        </Stagger>
-                    </Container>
-                </Band>
-            )}
-
-            {faqs.length > 0 && (
-                <Band className="border-t border-[var(--site-line)]">
-                    <Container>
-                        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-                            <Reveal>
-                                <Eyebrow className="mb-5">Questions</Eyebrow>
-                                <h2 className="site-display text-3xl sm:text-4xl">
-                                    Answers before you ask
-                                </h2>
-                                <p className="mt-5 text-[var(--site-muted)]">
-                                    Cannot find what you need?{' '}
-                                    <Link
-                                        href="/contact"
-                                        className="underline underline-offset-4"
-                                    >
-                                        Ask us directly
-                                    </Link>
-                                    .
-                                </p>
-                            </Reveal>
-                            <Reveal delay={0.1}>
-                                <FaqAccordion items={faqs} />
-                            </Reveal>
-                        </div>
-                    </Container>
-                </Band>
-            )}
         </>
     );
 }

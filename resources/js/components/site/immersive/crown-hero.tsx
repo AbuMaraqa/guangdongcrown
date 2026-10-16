@@ -21,7 +21,8 @@ const loadHeroScene = (element: HTMLElement, options: { mirror: boolean }) =>
 /**
  * Full-screen light hero: the Guang Dong Crown mark extruded into brushed
  * metal with orbiting particles, scrubbed by scroll while the copy lifts away.
- * Falls back to the flat SVG mark when WebGL is unavailable.
+ * The flat SVG mark shows until the 3D scene is ready, and stays when WebGL
+ * or the scene module is unavailable.
  */
 export function CrownHero({
     hero,
@@ -58,7 +59,7 @@ export function CrownHero({
                     className="block size-full opacity-0 transition-opacity duration-700 group-data-[hero-state=ready]:opacity-100"
                 />
                 <div
-                    className="crown-hero-fallback absolute inset-x-0 top-[14%] mx-auto hidden w-1/2 max-w-xs group-data-[hero-state=fallback]:block md:landscape:inset-x-auto md:landscape:end-[12%] md:landscape:top-1/2 md:landscape:w-[30%] md:landscape:max-w-md md:landscape:-translate-y-1/2"
+                    className="crown-hero-fallback absolute inset-x-0 top-[14%] mx-auto block w-1/2 max-w-xs group-data-[hero-state=ready]:hidden md:landscape:inset-x-auto md:landscape:end-[12%] md:landscape:top-1/2 md:landscape:w-[30%] md:landscape:max-w-md md:landscape:-translate-y-1/2"
                     dangerouslySetInnerHTML={{ __html: crownMark }}
                 />
             </div>

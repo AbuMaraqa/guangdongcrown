@@ -1,5 +1,6 @@
 import { Link, useForm } from '@inertiajs/react';
 import { Loader2, Save } from 'lucide-react';
+import { toast } from 'sonner';
 import { AdminIcon } from '@/components/admin/admin-icon';
 import { FieldSection, SchemaField } from '@/components/admin/fields';
 import type { CmsFormData, FieldSchema } from '@/components/admin/fields';
@@ -65,6 +66,12 @@ export default function SettingsIndex({
                         event.preventDefault();
                         form.put(`/admin/settings/${schema.key}`, {
                             preserveScroll: true,
+                            // The failing field may be far above the save
+                            // button, so say so where the editor is looking.
+                            onError: () =>
+                                toast.error(
+                                    'Settings were not saved. Check the fields marked in red.',
+                                ),
                         });
                     }}
                     className="space-y-6"
